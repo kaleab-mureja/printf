@@ -1,0 +1,58 @@
+.TH man 2 "18 April 2022" "0.32" "Printf man page"
+.SH NAME
+.B printf
+- Print the given string of character based on the given specifier.
+.SH SYNOPSIS
+printf FORMAT [ARGUMENT]...
+printf OPTION
+none.
+.SH DESCRIPTION
+FORMAT controls the output as in C printf. Interpreted sequences are:
+
+\"
+double quote
+\\
+backslash
+\a
+alert (BEL)
+\b
+backspace
+\c
+produce no further output
+\e
+escape
+\f
+form feed
+\n
+new line
+\r
+carriage return
+\t
+horizontal tab
+\v
+vertical tab
+%%
+a single %
+.SH BUGS
+Probably exists but I'll try to find them all.
+.SH EXAMPLE
+#include<stdio.h>
+
+main()
+{
+  int a,b;
+  float c,d;
+
+  a = 14;
+  b = a / 2;
+  printf("%d\n",b);
+  printf("%3d\n",b);
+}
+
+.SH RETURN VALUE
+Upon successful return, the function returns the number of
+characters printed (excluding the null byte used to end output to
+strings).
+
+.SH AUTHOR
+Milkias Yeheyis and Fekadu Woltejji

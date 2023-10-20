@@ -1,89 +1,144 @@
 #include "main.h"
 
 /**
- * is_printable - Evaluates if a char is printable
- * @c: Char to be evaluated.
- *
- * Return: 1 if c is printable, 0 otherwise
- */
-int is_printable(char c)
+	* _raw_print - prints string without checking format specifiers
+	* @string: string to be printed
+	* Description: prints string without checking format specifiers
+	* Return: length of string
+*/
+
+int _raw_print(char *string)
 {
-	if (c >= 32 && c < 127)
+	int i = 0;
+
+	if (string == NULL)
+	{
+		string = "(null)";
+	}
+
+	for (; string[i] != '\0'; i++)
+	{
+		_putchar(string[i]);
+	}
+
+	return (i);
+}
+
+/**
+	* _get_base - get the base of a number
+	* @num: number to get the base of
+	* Description: get the base of a number
+	* Return: int
+*/
+
+int _get_base(int num)
+{
+	int length = 0;
+
+	if (num == 0)
+		return (length);
+
+	while (num / 10 != 0)
+	{
+		num /= 10;
+		length++;
+	}
+
+	return (length + 1);
+}
+
+/**
+	* _pow - gets the output of the number raised to an exponent
+	* @num: number
+	* @exponent: exponent
+	* Description: gets the output of the number raised to an exponent
+	* Return: int
+*/
+
+int _pow(int num, int exponent)
+{
+	if (exponent == 0)
+	{
 		return (1);
+	}
+	if (exponent > 0)
+	{
+		return (num * _pow(num, exponent - 1));
+	}
 
-	return (0);
+	return (-1);
 }
 
 /**
- * append_hexa_code - Append ascci in hexadecimal code to buffer
- * @buffer: Array of chars.
- * @i: Index at which to start appending.
- * @ascii_code: ASSCI CODE.
- * Return: Always 3
- */
-int append_hexa_code(char ascii_code, char buffer[], int i)
+	* _print_int - prints a number using _putchar
+	* @num: number to print
+	* Description: prints a number using _putchar
+	* Return: void
+*/
+
+int _print_int(int num)
 {
-	char map_to[] = "0123456789ABCDEF";
-	/* The hexa format code is always 2 digits long */
-	if (ascii_code < 0)
-		ascii_code *= -1;
+	int base;
+	int curNum;
+	int length = 0;
+	int i = 0;
 
-	buffer[i++] = '\\';
-	buffer[i++] = 'x';
+	if (num == 0)
+	{
+		_putchar('0');
+		length++;
+	}
+	else
+	{
+		length += _get_base(num);
+		i = length;
 
-	buffer[i++] = map_to[ascii_code / 16];
-	buffer[i] = map_to[ascii_code % 16];
+		if (num < 0)
+		{
+			_putchar('-');
+			num *= -1;
+			length++;
+		}
+		while (i > 0)
+		{
+			base = --i;
+			curNum = num / _pow(10, base);
 
-	return (3);
+			num = num - (curNum * _pow(10, base));
+			_putchar('0' + curNum);
+		}
+	}
+
+	return (length);
 }
 
 /**
- * is_digit - Verifies if a char is a digit
- * @c: Char to be evaluated
- *
- * Return: 1 if c is a digit, 0 otherwise
- */
-int is_digit(char c)
+	* _print_double - prints the provided double
+	* @num: number to print
+	* Description: prints the provided double
+	* Return: void
+*/
+void _print_double(double num)
 {
-	if (c >= '0' && c <= '9')
-		return (1);
+	int base;
+	int length;
+	int curNum;
 
-	return (0);
+	if (num == 0)
+	{
+		_putchar('0');
+	}
+	else
+	{
+		length = _get_base(num);
+		while (length > 0)
+		{
+			base = --length;
+			curNum = num / _pow(10, base);
+
+			num = num - (curNum * _pow(10, base));
+			_putchar('0' + curNum);
+		}
+	}
+
 }
-
-/**
- * convert_size_number - Casts a number to the specified size
- * @num: Number to be casted.
- * @size: Number indicating the type to be casted.
- *
- * Return: Casted value of num
- */
-long int convert_size_number(long int num, int size)
-{
-	if (size == S_LONG)
-		return (num);
-	else if (size == S_SHORT)
-		return ((short)num);
-
-	return ((int)num);
-}
-
-/**
- * convert_size_unsgnd - Casts a number to the specified size
- * @num: Number to be casted
- * @size: Number indicating the type to be casted
- *
- * Return: Casted value of num
- */
-long int convert_size_unsgnd(unsigned long int num, int size)
-{
-	if (size == S_LONG)
-		return (num);
-	else if (size == S_SHORT)
-		return ((unsigned short)num);
-
-	return ((unsigned int)num);
-}
-
-
-

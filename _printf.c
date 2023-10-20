@@ -1,67 +1,89 @@
 #include "main.h"
 
-void print_buffer(char buffer[], int *buff_ind);
+/**
+	* handle_formatting - prints according to format specifier
+	* @specifier: specifier to handle
+	* @ap: macro holding arguments
+	* @fallback: fallback value for invalid format specifier
+	* Description: prints according to format specifier
+	* Return: int
+*/
+int handle_formatting(char specifier, va_list ap, char fallback)
+{
+	int length = 0;
+	unsigned int binaryNum;
+
+	switch (specifier)
+	{
+		case 'c':
+			_putchar(va_arg(ap, int));
+			length++;
+			break;
+		case 's':
+			length += _raw_print(va_arg(ap, char *));
+			break;
+		case 'i':
+		case 'd':
+			length += _print_int(va_arg(ap, int));
+			break;
+		case 'b':
+			binaryNum = toBinary(va_arg(ap, unsigned int));
+			length += _print_int(binaryNum);
+			break;
+		case 'r':
+			length += printReverseString(va_arg(ap, char *));
+			break;
+		case '%':
+			_putchar(fallback);
+			length++;
+			break;
+		default:
+			_putchar(fallback);
+			return (-1);
+
+	}
+
+	return (length);
+}
 
 /**
- * _printf - Printf function
- * @format: format.
- * Return: Printed chars.
- */
+	* _printf - prints given string in specified format
+	* @format: string to print with format specifiers included
+	* Description: prints given string in specified format
+	* Return: int
+*/
 int _printf(const char *format, ...)
 {
-	int i, printed = 0, printed_chars = 0;
-	int flags, width, precision, size, buff_ind = 0;
-	va_list list;
-	char buffer[BUFF_SIZE];
+	int i = 0;
+	int length = 0;
+	va_list ap;
 
-	if (format == NULL)
+	va_start(ap, format);
+
+	if (format == NULL || (format[0] == '%' && format[1] == '\0'))
 		return (-1);
-
-	va_start(list, format);
-
-	for (i = 0; format && format[i] != '\0'; i++)
+	for (; format[i] != '\0'; i++)
 	{
 		if (format[i] != '%')
 		{
-			buffer[buff_ind++] = format[i];
-			if (buff_ind == BUFF_SIZE)
-				print_buffer(buffer, &buff_ind);
-			/* write(1, &format[i], 1);*/
-			printed_chars++;
+			_putchar(format[i]);
+			length++;
 		}
 		else
 		{
-			print_buffer(buffer, &buff_ind);
-			flags = get_flags(format, &i);
-			width = get_width(format, &i, list);
-			precision = get_precision(format, &i, list);
-			size = get_size(format, &i);
-			++i;
-			printed = handle_print(format, &i, list, buffer,
-				flags, width, precision, size);
-			if (printed == -1)
-				return (-1);
-			printed_chars += printed;
+			int result = handle_formatting(format[i + 1], ap, format[i]);
+
+			if (result == -1)
+			{
+				length++;
+			}
+			else
+			{
+				length += result;
+				i++;
+			}
 		}
 	}
 
-	print_buffer(buffer, &buff_ind);
-
-	va_end(list);
-
-	return (printed_chars);
+	return (length);
 }
-
-/**
- * print_buffer - Prints the contents of the buffer if it exist
- * @buffer: Array of chars
- * @buff_ind: Index at which to add next char, represents the length.
- */
-void print_buffer(char buffer[], int *buff_ind)
-{
-	if (*buff_ind > 0)
-		write(1, &buffer[0], *buff_ind);
-
-	*buff_ind = 0;
-}
-
